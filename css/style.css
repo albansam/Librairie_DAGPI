@@ -49,3 +49,8 @@ h1 {
 .centered{
     text-align: center;
 }
+
+.centered-button{
+    margin-top: 20px;
+    width:100%
+}

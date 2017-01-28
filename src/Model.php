@@ -81,6 +81,7 @@ class Model
         return $query->fetchAll();
     }
 
+    /* Gets every copy of a specified book */
     public function getBookCopies($bookId){
         $query = $this->pdo->prepare('SELECT * FROM exemplaires WHERE book_id = ?');
 
@@ -89,6 +90,7 @@ class Model
         return $query->fetchAll();
     }
 
+    /* Counts book copies */
     public function getCopiesNumber($bookId){
         $number = 0;
         $querySelection = $this->pdo->prepare('SELECT COUNT(*) AS numCopies FROM exemplaires WHERE book_id = ?');
@@ -97,5 +99,33 @@ class Model
             $number = $row['numCopies'];
         }
         return $number;
+    }
+
+    /* Checks if a book is already hold by someone */
+    public function checkIfEmpruntExists($empruntID){
+        $exists = false;
+        $querySelection = $this->pdo->prepare('SELECT COUNT(*) AS Eexists FROM emprunts WHERE exemplaire = ? AND fini = 0');
+        $querySelection->execute(array($empruntID));
+        while ($row = $querySelection->fetch()) {
+            if($row['Eexists'] > 0){
+                $exists = true;
+            }
+        }
+        return $exists;
+    }
+
+    /* Sets a new hold */
+    public function setNewEmprunt($exId,$bookHolder,$dateFin){
+        $query = $this->pdo->prepare('INSERT INTO emprunts (personne, exemplaire, debut, fin, fini)
+            VALUES (?, ?, ?, ?, ?)');
+
+        $bookHolder = str_replace("'","",$bookHolder);
+        $bookHolder = strip_tags($bookHolder);
+
+        $dateFin = explode('/',$dateFin);
+        $dateFin = $dateFin[2] . '-' . $dateFin[1] . '-' . $dateFin[0];
+
+        $this->execute($query, array($bookHolder, $exId, date('Y-m-d') , $dateFin, 0));
+
     }
 }
