@@ -45,3 +45,7 @@ h1 {
 #bookTitle{
     padding-bottom: 10px;
 }
+
+.centered{
+    text-align: center;
+}

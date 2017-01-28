@@ -20,6 +20,8 @@ $app->match('/books', function() use ($app) {
 $app->match('/bookDetail', function() use ($app) {
     return $app['twig']->render('bookDetails.html.twig',array(
         'bookDetails' => $app['model']->getBookDetails($_GET['bookId']),
+        'copiesNumber' => $app['model']->getCopiesNumber($_GET['bookId']),
+        'bookCopies' => $app['model']->getBookCopies($_GET['bookId'])
     ));
 })->bind('bookDetail');
 

@@ -80,4 +80,22 @@ class Model
 
         return $query->fetchAll();
     }
+
+    public function getBookCopies($bookId){
+        $query = $this->pdo->prepare('SELECT * FROM exemplaires WHERE book_id = ?');
+
+        $this->execute($query,array($bookId));
+
+        return $query->fetchAll();
+    }
+
+    public function getCopiesNumber($bookId){
+        $number = 0;
+        $querySelection = $this->pdo->prepare('SELECT COUNT(*) AS numCopies FROM exemplaires WHERE book_id = ?');
+        $querySelection->execute(array($bookId));
+        while ($row = $querySelection->fetch()) {
+            $number = $row['numCopies'];
+        }
+        return $number;
+    }
 }

@@ -7,13 +7,31 @@
             <div class="col-md-3">
                 <img src="{{ app.request.basepath }}/uploads/{{ book.image }}.jpg" />
             </div>
-            <div class="col-md-9">
+            <div class="col-md-4">
                 <div class="row" id="bookTitle">
                     <span class="bookTitle">{{ book.titre }}</span>
                 </div>
                 <div class="row">
                     <p><span class="prefix">Synopsis :</span> {{ book.synopsis }}</p>
                 </div>
+            </div>
+            <div class="col-md-5">
+                <p class="bookTitle centered">Exemplaires existants de ce livre</p>
+                <span>Il existe actuellement <span class="prefix">{{ copiesNumber }}</span> exemplaires de ce livre.</span>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Identifiant</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for emprunt in bookCopies %}
+                            <tr>
+                                <td>{{ emprunt.id }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
 
