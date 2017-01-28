@@ -29,7 +29,6 @@ $app->match('/bookDetail', function() use ($app) {
 /* New borrow */
 $app->match('/newEmprunt', function() use ($app) {
     $request = $app['request'];
-    $success = false;
     if ($request->getMethod() == 'POST') {
         $post = $request->request;
         if($post->has('bookHolder') and $post->get('bookHolder') != '' and $post->has('returnDate') and $post->get('returnDate') != ''){
@@ -67,6 +66,31 @@ $app->match('/newEmprunt', function() use ($app) {
     }
 })->bind('newEmprunt');
 
+/* Terminate borrow */
+$app->match('/finishEmprunt', function() use ($app) {
+    $request = $app['request'];
+    if ($request->getMethod() == 'POST') {
+        $post = $request->request;
+        if($post->has('returnDate') and $post->get('returnDate') != ''){
+            $app['model']->returnEmprunt($_GET['copyId'],$post->get('returnDate'));
+            return $app['twig']->render('finishEmprunt.html.twig',array(
+                'empruntId' => ($_GET['copyId']),
+                'returnDone' => '1'
+            ));
+        }
+        else{
+            return $app['twig']->render('finishEmprunt.html.twig',array(
+                'empruntId' => ($_GET['copyId']),
+                'returnDone' => '0'
+            ));
+        }
+    }
+    else{
+        return $app['twig']->render('finishEmprunt.html.twig',array(
+            'empruntId' => ($_GET['copyId'])
+        ));
+    }
+})->bind('finishEmprunt');
 
 /* Authentication system */
 $app->match('/admin', function() use ($app) {

@@ -2,6 +2,13 @@
 {% extends 'layout.html.twig' %}
 
 {% block contents %}
+
+    {% if returnSuccess is defined %}
+        <div class="alert alert-success loginsuccess">
+            L'exemplaire a bien été retourné
+        </div>
+    {% endif %}
+
     {% for book in bookDetails %}
         <div class="row">
             <div class="col-md-3">
@@ -25,6 +32,9 @@
                         {% if app.session.get('admin') %}
                             <th>Emprunter ?</th>
                         {% endif %}
+                        {% if app.session.get('admin') %}
+                            <th>Retourner ?</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -39,6 +49,13 @@
                                     <td>
                                         <a href="{{ path('newEmprunt',{'copyId': copy.id }) }}" class="btn btn-info btn-sm" role="button">Emprunter</a>
                                     </td>
+                                {% endif %}
+                                {% if app.session.get('admin') and copy.hold == 1  %}
+                                    <td>
+                                        <a href="{{ path('finishEmprunt',{'copyId': copy.id }) }}" class="btn btn-success btn-sm" role="button">Retourner</a>
+                                    </td>
+                                {% else %}
+                                    <td></td>
                                 {% endif %}
                             </tr>
                         {% endfor %}

@@ -153,6 +153,17 @@ class Model
         $dateFin = $dateFin[2] . '-' . $dateFin[1] . '-' . $dateFin[0];
 
         $this->execute($query, array($bookHolder, $exId, date('Y-m-d') , $dateFin, 0));
+    }
 
+    public function returnEmprunt($empruntId,$dateFin){
+        $query = $this->pdo->prepare('UPDATE emprunts
+                                      SET fin = ?,
+                                          fini = \'1\'
+                                      WHERE exemplaire = ? AND fini = 0');
+
+        $dateFin = explode('/',$dateFin);
+        $dateFin = $dateFin[2] . '-' . $dateFin[1] . '-' . $dateFin[0];
+
+        $this->execute($query, array($dateFin, $empruntId));
     }
 }
