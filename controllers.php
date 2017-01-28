@@ -2,16 +2,29 @@
 
 use Gregwar\Image\Image;
 
+/* Home rendering*/
 $app->match('/', function() use ($app) {
     return $app['twig']->render('home.html.twig');
 })->bind('home');
 
+
+/* Books list rendering */
 $app->match('/books', function() use ($app) {
     return $app['twig']->render('books.html.twig', array(
         'books' => $app['model']->getBooks()
     ));
 })->bind('books');
 
+
+/* Book details rendering */
+$app->match('/bookDetail', function() use ($app) {
+    return $app['twig']->render('bookDetails.html.twig',array(
+        'bookDetails' => $app['model']->getBookDetails($_GET['bookId']),
+    ));
+})->bind('bookDetail');
+
+
+/* Authentication system */
 $app->match('/admin', function() use ($app) {
     $request = $app['request'];
     $success = false;
@@ -33,11 +46,15 @@ $app->match('/admin', function() use ($app) {
     ));
 })->bind('admin');
 
+
+/* Disconnection */
 $app->match('/logout', function() use ($app) {
     $app['session']->remove('admin');
     return $app->redirect($app['url_generator']->generate('admin'));
 })->bind('logout');
 
+
+/* Adding a book */
 $app->match('/addBook', function() use ($app) {
     if (!$app['session']->has('admin')) {
         return $app['twig']->render('shouldBeAdmin.html.twig');

@@ -1,0 +1,23 @@
+{% set books_active = 1 %}
+{% extends 'layout.html.twig' %}
+
+{% block contents %}
+    {% for book in bookDetails %}
+        <div class="row">
+            <div class="col-md-3">
+                <img src="{{ app.request.basepath }}/uploads/{{ book.image }}.jpg" />
+            </div>
+            <div class="col-md-9">
+                <div class="row" id="bookTitle">
+                    <span class="bookTitle">{{ book.titre }}</span>
+                </div>
+                <div class="row">
+                    <p><span class="prefix">Synopsis :</span> {{ book.synopsis }}</p>
+                </div>
+            </div>
+        </div>
+
+
+
+    {% endfor %}
+{% endblock %}

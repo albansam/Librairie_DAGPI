@@ -60,4 +60,15 @@ class Model
 
         return $query->fetchAll();
     }
+
+    /**
+     * Getting specific book details
+     */
+    public function getBookDetails($bookId){
+        $query = $this->pdo->prepare('SELECT livres.* FROM livres WHERE livres.id = ?');
+
+        $this->execute($query,array($bookId));
+
+        return $query->fetchAll();
+    }
 }
