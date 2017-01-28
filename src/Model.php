@@ -84,10 +84,20 @@ class Model
     /* Gets every copy of a specified book */
     public function getBookCopies($bookId){
         $query = $this->pdo->prepare('SELECT * FROM exemplaires WHERE book_id = ?');
-
         $this->execute($query,array($bookId));
+        $copies = $query->fetchAll();
+        foreach ($copies as &$copy){
 
-        return $query->fetchAll();
+            $copy['hold'] = 0;
+            $querySelection = $this->pdo->prepare('SELECT COUNT(*) AS Eexists FROM emprunts WHERE exemplaire = ? AND fini = 0');
+            $querySelection->execute(array($copy['id']));
+            while ($row = $querySelection->fetch()) {
+                if($row['Eexists'] > 0){
+                    $copy['hold'] = 1;
+                }
+            }
+        }
+        return $copies;
     }
 
     /* Counts book copies */
@@ -99,6 +109,23 @@ class Model
             $number = $row['numCopies'];
         }
         return $number;
+    }
+
+    /* Counts available copies of a book */
+    public function getHoldNumber($bookId){
+            $number = 0;
+            $querySelection = $this->pdo->prepare('SELECT COUNT(*) AS numCopies FROM exemplaires
+                                                    WHERE book_id = ? AND id NOT IN
+                                                      (SELECT emprunts.exemplaire
+                                                        FROM emprunts
+                                                          JOIN exemplaires ON  emprunts.exemplaire = exemplaires.id
+                                                          JOIN livres ON exemplaires.book_id = livres.id
+                                                          WHERE livres.id = ?)');
+            $querySelection->execute(array($bookId,$bookId));
+            while ($row = $querySelection->fetch()) {
+                $number = $row['numCopies'];
+            }
+            return $number;
     }
 
     /* Checks if a book is already hold by someone */

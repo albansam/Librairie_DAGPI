@@ -17,7 +17,7 @@
             </div>
             <div class="col-md-5">
                 <p class="bookTitle centered">Exemplaires existants de ce livre</p>
-                <span>Il existe actuellement <span class="prefix">{{ copiesNumber }}</span> exemplaires de ce livre.</span>
+                <span>Il existe actuellement <span class="prefix">{{ copiesNumber }}</span> exemplaires de ce livre, dont <span class="prefix">{{ holdCopies }}</span> disponibles.</span>
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -30,7 +30,11 @@
                     <tbody>
                         {% for copy in bookCopies %}
                             <tr>
-                                <td>{{ copy.id }}</td>
+                                {% if copy.hold == 1 %}
+                                    <td class="hold">{{ copy.id }} (Réservé)</td>
+                                {% else %}
+                                    <td>{{ copy.id }}</td>
+                                {% endif %}
                                 {% if app.session.get('admin') %}
                                     <td>
                                         <a href="{{ path('newEmprunt',{'copyId': copy.id }) }}" class="btn btn-info btn-sm" role="button">Emprunter</a>
@@ -42,8 +46,6 @@
                 </table>
             </div>
         </div>
-
-
 
     {% endfor %}
 {% endblock %}
