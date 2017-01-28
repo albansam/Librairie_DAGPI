@@ -17,10 +17,15 @@ $app->match('/admin', function() use ($app) {
     $success = false;
     if ($request->getMethod() == 'POST') {
         $post = $request->request;
-        if ($post->has('login') && $post->has('password') &&
-            array($post->get('login'), $post->get('password')) == $app['config']['admin']) {
-            $app['session']->set('admin', true);
-            $success = true;
+        if ($post->has('login') && $post->has('password')){
+            $found = false;
+            foreach ($app['config']['admin'] as $authType){
+                if((array($post->get('login'), $post->get('password')) == $authType) && !$found){
+                    $app['session']->set('admin', true);
+                    $success = true;
+                    $found = true;
+                }
+            }
         }
     }
     return $app['twig']->render('admin.html.twig', array(
