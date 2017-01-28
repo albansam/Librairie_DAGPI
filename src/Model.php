@@ -46,7 +46,16 @@ class Model
             VALUES (?, ?, ?, ?)');
         $this->execute($query, array($title, $author, $synopsis, $image));
 
-        // TODO: Créer $copies exemplaires
+        $querySelection= $this->pdo->prepare('SELECT id FROM livres ORDER BY id DESC LIMIT 1;');
+        $querySelection->execute();
+        while ($row = $querySelection->fetch()) {
+            $id = $row['id'];
+            for($i = 0; $i < $copies; $i++){
+                $queryInsertion = $this->pdo->prepare('INSERT INTO exemplaires (book_id) VALUES (?)');
+                $this->execute($queryInsertion, array($id));
+            }
+        }
+        $querySelection = null;
     }
 
     /**
